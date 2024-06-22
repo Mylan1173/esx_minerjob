@@ -28,3 +28,12 @@ AddEventHandler('esx_minerjob:giveItem', function(source, item, amount)
         print('full')
     end
 end)
+
+RegisterServerEvent('esx_minerjob:AddItem')
+AddEventHandler('esx_minerjob:AddItem', function(player, item)
+    if exports.ox_inventory:CanCarryItem(player, item, 1) then
+        exports.ox_inventory:AddItem(player, item, 1)
+    else
+        TriggerClientEvent('okokNotify:Alert', player, "Érc mosó", "Nincs nálad elég hely!", 3000, 'error')
+    end
+end)

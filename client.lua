@@ -48,7 +48,38 @@ CreateThread(function()
 end)
 
 function SpawnRocks()
+    for i, v in pairs(rocks) do
+        spawnedRocks = 1
+        for i, v in pairs(rocks) do
+            if v.spawned then
+                spawnedRocks = spawnedRocks + 1
+            end
+        end
+        if spawnedRocks <= 5 then
 
+            local num = math.random(#rocks)
+            local random = rocks[num]
+            while random.spawned or num == lastrock do
+                num = math.random(#rocks)
+                random = rocks[num]
+            end
+
+            rocks[num].spawned = true
+
+            if not HasModelLoaded(rocks[num].model) then
+                RequestModel(rocks[num].model)
+
+                while not HasModelLoaded(rocks[num].model) do
+                    Wait(1)
+                end
+            end
+
+
+            rocks[num].rock = CreateObject(rocks[num].model, rocks[num].pos, false, false, true)
+            FreezeEntityPosition(rocks[num].rock, true)
+
+        end
+    end
 end
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -145,6 +176,20 @@ function Markers()
         end
     end)
 end
+
+AddEventHandler('esx_minerjob:hasExitedMarker', function()
+    exports['okokTextUI']:Close()
+    CurrentAction = nil
+    ESX.UI.Menu.CloseAll()
+end)
+
+AddEventHandler('esx_minerjob:hasEnteredMarker', function(name)
+    if name == 'WASH' then
+        CurrentActionMsg = 'Nyomd meg az <b>[E]</b>-t hogy átmosd a köveket.'
+    elseif name == 'SELL' then
+        CurrentActionMsg = 'Nyomd meg az <b>[E]</b>-t hogy megnyisd a menüt.'
+    end
+end)
 
 function TextUI()
     CreateThread(function()
