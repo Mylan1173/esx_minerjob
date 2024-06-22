@@ -19,3 +19,12 @@ function RandomOre()
 
     return ore
 end
+
+RegisterServerEvent('esx_minerjob:giveItem')
+AddEventHandler('esx_minerjob:giveItem', function(source, item, amount)
+    if exports.ox_inventory:CanCarryItem(source, item, amount) then
+        exports.ox_inventory:AddItem(source, item, amount)
+    else
+        print('full')
+    end
+end)
